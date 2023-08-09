@@ -4,12 +4,10 @@ import { Link } from "react-router-dom";
 
 import axios from "axios";
 
-const EditMovieForm = (props) => {
-  const { push } = useHistory();
-  const {id} = useParams();
-
-  const { setMovies } = props;
-  const [movie, setMovie] = useState({
+const AddMovieForm = (props) => {
+  const {setMovies} = props;
+  const {push} = useHistory;
+  const [newMovie, setNewMovie] = useState({
     title: "",
     director: "",
     genre: "",
@@ -18,8 +16,8 @@ const EditMovieForm = (props) => {
   });
 
   const handleChange = (e) => {
-    setMovie({
-      ...movie,
+    setNewMovie({
+      ...newMovie,
       [e.target.name]: e.target.value,
     });
   };
@@ -27,33 +25,23 @@ const EditMovieForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(`http://localhost:9000/api/movies/${id}`, movie)
+      .post(`http://localhost:9000/api/movies`, newMovie)
       .then((res) => {
         setMovies(res.data);
-        push(`/movies/${movie.id}`);
+        push(`/movies`);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  useEffect(()=>{
-    axios
-    .get(`http://localhost:9000/api/movies/${id}`)
-    .then((res)=>{
-      setMovie({...res.data})
-      .catch((err) => {
-        console.log(err);
-      });
-    })
-  },[])
 
-  const { title, director, genre, metascore, description } = movie;
+  const { title, director, genre, metascore, description } = newMovie;
 
   return (
     <div className="bg-white rounded-md shadow flex-1">
       <form onSubmit={handleSubmit}>
         <div className="p-5 pb-3 border-b border-zinc-200">
-          <h4 className="text-xl font-bold">Düzenleniyor <strong>{movie.title}</strong></h4>
+          <h4 className="text-xl font-bold">YENİ FİLM EKLE </h4>
         </div>
 
         <div className="px-5 py-3">
@@ -119,4 +107,4 @@ const EditMovieForm = (props) => {
   );
 };
 
-export default EditMovieForm;
+export default AddMovieForm;
